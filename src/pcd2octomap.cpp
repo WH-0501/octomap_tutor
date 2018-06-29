@@ -14,6 +14,7 @@
 
 //octomap 
 #include <octomap/octomap.h>
+#include <octomap/Pointcloud.h>
 using namespace std;
 
 int main( int argc, char** argv )
@@ -33,16 +34,29 @@ int main( int argc, char** argv )
     //声明octomap变量
     cout<<"copy data into octomap..."<<endl;
     // 创建八叉树对象，参数为分辨率，这里设成了0.05
-    octomap::OcTree tree( 0.05 );
-
+    octomap::OcTree tree( 0.2 );
+	
+    octomap::Pointcloud scan;
+    printf("=======?");
     for (auto p:cloud.points)
     {
-        // 将点云里的点插入到octomap中
-        tree.updateNode( octomap::point3d(p.x, p.y, p.z), true );
+        // 将点云里的点插入到octomap中 
+        //tree.updateNode( octomap::point3d(p.x, p.y, p.z), true ); // true 只插入 occupied
+	
+	/* 
+	 * 上面的updateNode只考虑了占用区域，即实际障碍物，未写入未free区域
+	 * insertPointCloud(const Pointcloud& scan, 
+			    const octomap::point3d& sensor_origin,
+                            double maxrange=-1., 
+                            bool lazy_eval = false, 
+                            bool discretize = false) 
+	 */
+	scan.push_back(p.x,p.y,p.z);
+        //printf("=======?");
     }
-
+    tree.insertPointCloud(&scan,octomap::point3d(0,0,0));
     // 更新octomap
-    tree.updateInnerOccupancy();
+    //tree.updateInnerOccupancy();
     // 存储octomap
     tree.writeBinary( output_file );
     cout<<"done."<<endl;

@@ -1,6 +1,8 @@
 # octomap_tutor
 A tutorial about octomap. Please check my blog for detail: cnblogs.com/gaoxiang12
 
+解决PCD转octomap时未更新free node，导致后面使用octomap_server得到的2D occupancy地图没有可用区域的问题
+
 Installation:
 Dependency: 
   opencv - sudo apt-get install libopencv-dev
